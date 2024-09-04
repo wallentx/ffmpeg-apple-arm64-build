@@ -1,10 +1,67 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
-# Option feature set to FALSE if not rewuired and TRUE if required
+# Initialize feature options to FALSE by default
 ENABLE_FFPLAY=FALSE
 ENABLE_TOPAZ=FALSE
 ENABLE_AVISYNTHPLUS=FALSE
 BUILD_FROM_MAIN=FALSE
+
+# Usage function
+usage() {
+    echo "Usage: $0 [-p] [-h]"
+    echo "  -p    Prompt user to enable features interactively (Y/N)."
+    echo "  -h    Display this help message."
+}
+
+# Prompt function to ask user Y/N for each feature
+prompt_user() {
+    read -p "Enable FFplay? (Y/N): " choice
+    case "$choice" in 
+      y|Y ) ENABLE_FFPLAY=TRUE;;
+      * ) ENABLE_FFPLAY=FALSE;;
+    esac
+
+    read -p "Enable Topaz? (Y/N): " choice
+    case "$choice" in 
+      y|Y ) ENABLE_TOPAZ=TRUE;;
+      * ) ENABLE_TOPAZ=FALSE;;
+    esac
+
+    read -p "Enable AvisynthPlus? (Y/N): " choice
+    case "$choice" in 
+      y|Y ) ENABLE_AVISYNTHPLUS=TRUE;;
+      * ) ENABLE_AVISYNTHPLUS=FALSE;;
+    esac
+
+    read -p "Build from Main branch? (Y/N): " choice
+    case "$choice" in 
+      y|Y ) BUILD_FROM_MAIN=TRUE;;
+      * ) BUILD_FROM_MAIN=FALSE;;
+    esac
+}
+
+# Parse options using getopts
+while getopts "ph" opt; do
+    case $opt in
+        p)
+            prompt_user
+            ;;
+        h)
+            usage
+            exit 0
+            ;;
+        *)
+            usage
+            exit 1
+            ;;
+    esac
+done
+
+# Display the selected options after prompting or default values
+echo "FFplay enabled: $ENABLE_FFPLAY"
+echo "Topaz enabled: $ENABLE_TOPAZ"
+echo "AvisynthPlus enabled: $ENABLE_AVISYNTHPLUS"
+echo "Build from Main: $BUILD_FROM_MAIN"
 
 # set true for dependant features, export those needed in ffmpeg build script
  
